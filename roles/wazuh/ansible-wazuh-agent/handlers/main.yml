@@ -4,6 +4,13 @@
 
 - name: Windows | Restart Wazuh Agent
   win_service: name=WazuhSvc start_mode=auto state=restarted
+  listen: restart wazuh-agent
 
 - name: macOS | Restart Wazuh Agent
   command: /Library/Ossec/bin/wazuh-control restart
+
+  - name: restart auditd
+  service:
+    name: auditd
+    state: restarted
+  listen: restart auditd
