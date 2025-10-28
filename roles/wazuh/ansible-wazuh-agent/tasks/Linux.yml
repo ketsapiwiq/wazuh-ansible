@@ -204,6 +204,28 @@
     name: wazuh
     state: present
 
+- name: Linux | Install auditd
+  package:
+    name: auditd
+    state: present
+  when:
+    - ansible_os_family == "RedHat" or ansible_os_family == "Debian"
+  tags:
+    - init
+
+- name: Linux | Deploy auditd rules
+  template:
+    src: audit.rules.j2
+    dest: /etc/audit/rules.d/audit.rules
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart auditd
+  when:
+    - ansible_os_family == "RedHat" or ansible_os_family == "Debian"
+  tags:
+    - config
+
 - name: Linux | Installing agent configuration (ossec.conf)
   template:
     src: var-ossec-etc-ossec-agent.conf.j2

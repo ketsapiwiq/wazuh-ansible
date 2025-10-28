@@ -3,6 +3,34 @@
 <!-- Modify it at your will. -->
 <!-- Copyright (C) 2016, Wazuh Inc. -->
 
+<group name="audit">
+  <rule id="100002" level="3">
+    <decoded_as>auditd-syscall</decoded_as>
+    <list field="audit.key" lookup="match_key">etc/lists/audit-keys</list>
+    <description>Auditd: Command executed.</description>
+    <group>audit_command,</group>
+  </rule>
+
+  <rule id="100003" level="10">
+    <if_sid>100002</if_sid>
+    <list field="audit.key" lookup="match_key">etc/lists/audit-keys</list>
+    <match>privileged-command</match>
+    <description>Auditd: Privileged command executed.</description>
+    <group>audit_privileged,pci_dss_10.2.2,</group>
+  </rule>
+
+  <rule id="100004" level="12">
+    <if_sid>100002</if_sid>
+    <field name="audit.auid">(www-data|apache|nginx)</field>
+    <field name="audit.exe" type="pcre2">(/bin/bash|/bin/sh|/usr/bin/nc|/usr/bin/netcat|/usr/bin/python)</field>
+    <description>Potential web shell detected.</description>
+    <mitre>
+      <id>T1505.003</id>
+    </mitre>
+    <group>webshell,attack.execution,pci_dss_10.6.1,pci_dss_11.4,</group>
+  </rule>
+</group>
+
 <!-- Example -->
 <group name="local,syslog,sshd,">
 

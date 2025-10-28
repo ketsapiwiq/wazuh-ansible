@@ -20,6 +20,22 @@
   - extra_data - Any extra data
 -->
 
-<decoder name="local_decoder_example">
-    <program_name>local_decoder_example</program_name>
+<decoder name="auditd">
+  <prematch>type=SYSCALL</prematch>
+</decoder>
+
+<decoder name="auditd-syscall">
+  <parent>auditd</parent>
+  <regex>type=SYSCALL msg=audit(\S+): arch=\S+ syscall=\S+ success=\S+ exit=\S+ a0=\S+ a1=\S+ a2=\S+ a3=\S+ items=\S+ ppid=(\d+) pid=(\d+) auid=(\S+) uid=\S+ gid=\S+ euid=\S+ suid=\S+ fsuid=\S+ egid=\S+ sgid=\S+ fsgid=\S+ tty=\S+ ses=\S+ comm=\S+ exe="(\S+)"</regex>
+  <order>timestamp, ppid, pid, auid, exe</order>
+</decoder>
+
+<decoder name="auditd-execve">
+  <prematch>type=EXECVE</prematch>
+</decoder>
+
+<decoder name="auditd-execve-args">
+  <parent>auditd-execve</parent>
+  <regex>msg=audit(\S+): argc=\d+ (.*)</regex>
+  <plugin_decoder order="command">AUDIT_EXECVE</plugin_decoder>
 </decoder>

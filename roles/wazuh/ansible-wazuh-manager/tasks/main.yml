@@ -180,6 +180,19 @@
     - config
     - rules
 
+- name: Configure audit-keys CDB list
+  template:
+    src: audit-keys.j2
+    dest: /var/ossec/etc/lists/audit-keys
+    owner: ossec
+    group: ossec
+    mode: 0640
+  notify: restart wazuh-manager
+  tags:
+    - init
+    - config
+    - rules
+
 - name: Configure the shared-agent.conf
   template:
     src: var-ossec-etc-shared-agent.conf.j2
