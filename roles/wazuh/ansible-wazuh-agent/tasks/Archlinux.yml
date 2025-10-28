@@ -1,0 +1,48 @@
+---
+- name: Archlinux | Install dependencies
+  pacman:
+    name:
+      - git
+      - curl
+      - gcc
+      - make
+      - sudo
+      - expect
+      - gnupg
+      - perl
+      - fakeroot
+      - python
+      - brotli
+      - automake
+      - autoconf
+      - libtool
+      - gawk
+      - libsigsegv
+      - nodejs
+      - base-devel
+      - inetutils
+      - cmake
+    state: present
+
+- name: Archlinux | Clone wazuh-agent-archlinux repository
+  git:
+    repo: https://github.com/mranv/wazuh-agent-archlinux.git
+    dest: /tmp/wazuh-agent-archlinux
+
+- name: Archlinux | Build wazuh-agent package
+  command: makepkg -s --noconfirm
+  args:
+    chdir: /tmp/wazuh-agent-archlinux
+
+- name: Archlinux | Find the built wazuh-agent package
+  find:
+    paths: /tmp/wazuh-agent-archlinux
+    patterns: "wazuh-agent-*.pkg.tar.zst"
+  register: wazuh_agent_pkg
+
+- name: Archlinux | Install wazuh-agent package
+  pacman:
+    name: "{{ wazuh_agent_pkg.files[0].path }}"
+    state: present
+  notify: restart wazuh-agent
+  when: wazuh_agent_pkg.matched > 0
