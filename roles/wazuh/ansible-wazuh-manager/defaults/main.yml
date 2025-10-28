@@ -364,6 +364,12 @@ wazuh_manager_config:
     - name: null
       api_key: '<api_key>'
       alert_level: 12
+    #telegram
+    - name: custom-telegram
+      hook_url: 'https://api.telegram.org/bot<your_bot_token>/sendMessage'
+      chat_id: '<your_chat_id>'
+      alert_level: 10
+      alert_format: 'json'
   monitor_aws:
     disabled: 'yes'
     interval: '10m'

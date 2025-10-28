@@ -555,6 +555,9 @@
     {% if integration.api_key is defined %}
     <api_key>{{ integration.api_key }}</api_key>
     {% endif %}
+    {% if integration.chat_id is defined %}
+    <chat_id>{{ integration.chat_id }}</chat_id>
+    {% endif %}
     {% if integration.alert_format is defined %}
     <alert_format>{{ integration.alert_format }}</alert_format>
     {% endif %}
